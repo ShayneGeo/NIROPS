@@ -40,7 +40,15 @@ try:
     # Create a Folium map centered on the shapefile
     center = gdf.geometry.centroid.iloc[0].coords[0][::-1]  # (lat, lon)
     m = folium.Map(location=center, zoom_start=10)
-    folium.GeoJson(gdf).add_to(m)
+    #folium.GeoJson(gdf).add_to(m)
+    # Convert Timestamp columns to string
+    gdf_clean = gdf.copy()
+    for col in gdf_clean.columns:
+        if gdf_clean[col].dtype.name == "datetime64[ns]":
+            gdf_clean[col] = gdf_clean[col].astype(str)
+    
+    folium.GeoJson(gdf_clean).add_to(m)
+
 
     # Display the map
     st_folium(m, width=700, height=500)
